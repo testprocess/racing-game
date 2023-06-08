@@ -1,0 +1,24 @@
+
+#joystick {
+    position: absolute;
+    height: 24px;
+    width: 24px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+#joystick-control {
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+#joystick-line {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
