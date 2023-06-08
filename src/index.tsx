@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as ReactDOMClient from 'react-dom/client';
 import App from './App';
-import World from './screen/index'
+import Screen from './screen/index'
 
 
 const rootElement = document.getElementById("app");
@@ -11,4 +11,4 @@ root.render(
     <App />       
 );
 
-new World()
+new Screen()
