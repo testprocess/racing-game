@@ -27,7 +27,9 @@ class World {
     
         
         this.camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 1, 100 );
-        this.camera.position.set( 0, 3, 7 );
+        this.camera.position.set( 0, 3, 0 );
+        this.camera.rotation.x = Math.PI + 2.40
+
         this.scene.add(this.camera);
     
     
@@ -61,9 +63,12 @@ class World {
         const helper = new THREE.CameraHelper( dirLight.shadow.camera );
         this.scene.add( helper );
 
-        const car = new Car()
+        const car = new Car({ 
+            camera: this.camera
+        })
+
         const carModel = car.getModel()
-        carModel.add(this.camera)
+        //carModel.add(this.camera)
 
         this.scene.add( carModel );
 
