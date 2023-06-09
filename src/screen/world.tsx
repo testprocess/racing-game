@@ -18,7 +18,7 @@ class World {
         this.init()
     }
 
-    init = async () => {
+    async init() {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color( 0x000000 );
         this.scene.fog = new THREE.Fog( 0xa0a0a0, 10, 50 );
@@ -62,16 +62,38 @@ class World {
         this.scene.add( helper );
 
         const car = new Car()
-        this.scene.add( car.getModel() );
+        const carModel = car.getModel()
+        carModel.add(this.camera)
+
+        this.scene.add( carModel );
+
         
-        const animate = () => {
-            requestAnimationFrame( animate );
-    
-            this.renderer.render( this.scene, this.camera );
-        }
-    
-        animate();
+
+        this.animate();
+        this.createWorld()
     }
+
+    createWorld() {
+        for (let index = 0; index < 20; index++) {
+            const geometry = new THREE.BoxGeometry( 1, 1, 1 ); 
+            const material = new THREE.MeshBasicMaterial( {color: 0xffffff} ); 
+            const cube = new THREE.Mesh( geometry, material ); 
+
+            const x = Math.random() * (30 - -30) + -30;
+            const y = 0
+            const z = Math.random() * (30 - -30) + -30;
+
+            cube.position.set(x, y, z)
+            this.scene.add(cube)            
+        }
+
+    }
+
+    animate() {
+        requestAnimationFrame( this.animate.bind(this) );
+        this.renderer.render( this.scene, this.camera );
+    }
+
 }
 
 export { World }
