@@ -30,11 +30,16 @@ const Joystick = () => {
             y: Number(joystickBody.current.style.top.split('px')[0])
         }
 
+
         let radian = getAngle(controlPosition, joystickPosition)
+        let disX = controlPosition.x - joystickPosition.x
+        let dixY = controlPosition.y - joystickPosition.y
+        let dist = Math.sqrt(Math.abs(disX * disX) + Math.abs(dixY * dixY))
 
         const event = new CustomEvent('onJoystickMove', {
             detail: {
-                radian: radian
+                radian: radian,
+                force: dist
             }
         });
         document.dispatchEvent(event);
