@@ -5,6 +5,9 @@ class Car {
     carModel: any
     isMove: boolean;
     radian: number;
+    inputRadian: number
+    standardRadian: number
+    isChangeStandardRadian: boolean
     previousRadian: number[]
     modelVisualTurn: number
     force: number;
@@ -23,6 +26,11 @@ class Car {
         this.model = undefined
         this.isMove = false
         this.radian = 0
+        this.inputRadian = 0
+
+        this.standardRadian = 0
+        this.isChangeStandardRadian = false
+
         this.previousRadian = [0]
         this.modelVisualTurn = 0
 
@@ -40,6 +48,8 @@ class Car {
 
     handleJoystickStop(e: any) {
         this.isMove = false
+        this.isChangeStandardRadian = false
+        this.standardRadian = this.radian
     }
 
     handleJoystickStart(e: any) {
@@ -65,17 +75,28 @@ class Car {
     }
 
     moveModel({ radian, force }: any) {
+        this.inputRadian = radian
+    }
 
+    updateVelocity() {
+        let radianDirection = this.inputRadian + (90 * Math.PI / 180)
 
-        this.radian = radian
+        if (Math.abs((radianDirection) * 180 / Math.PI) > 90) {
+            radianDirection = (90 * Math.PI / 180) * (radianDirection >  Math.PI ? -1 : 1)
+        }
 
-        const vx = -Math.cos(radian)
-        const vz = -Math.sin(radian)
+        if (this.isMove) {
+            this.radian += radianDirection / 50
 
-        this.velocity.set(vx, 0, vz)
+            const vx = -Math.cos(this.radian)
+            const vz = -Math.sin(this.radian)
+    
+            this.velocity.set(vx, 0, vz)
+        }
     }
 
     updatePosition() {
+        this.updateVelocity()
         const acceleration = 0.01
         const deacceleration = 0.07
         const maxForce = 5
