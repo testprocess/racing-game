@@ -2,8 +2,11 @@ import * as THREE from 'three';
 
 class Car {
     model: any;
+    carModel: any
     isMove: boolean;
     radian: number;
+    previousRadian: number[]
+    modelVisualTurn: number
     force: number;
     velocity: any;
 
@@ -20,6 +23,9 @@ class Car {
         this.model = undefined
         this.isMove = false
         this.radian = 0
+        this.previousRadian = [0]
+        this.modelVisualTurn = 0
+
         this.force = 0
         this.velocity = new THREE.Vector3( 0, 0, 0 )
 
@@ -42,10 +48,16 @@ class Car {
 
 
     getModel() {
+        const carBox = new THREE.Object3D()
+
         const geometry = new THREE.BoxGeometry( 1, 1, 2 ); 
         const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
         const cube = new THREE.Mesh( geometry, material ); 
-        this.model = cube
+
+        carBox.add(cube)
+
+        this.model = carBox
+        this.carModel = cube
 
         this.loop()
 
@@ -53,25 +65,52 @@ class Car {
     }
 
     moveModel({ radian, force }: any) {
-        const acceleration = 0.01
-        const maxForce = 5
+
 
         this.radian = radian
-        this.force = this.force > maxForce ? this.force : this.force + acceleration
 
-        const vx = Math.cos(radian)
-        const vz = Math.sin(radian)
+        const vx = -Math.cos(radian)
+        const vz = -Math.sin(radian)
 
         this.velocity.set(vx, 0, vz)
-        //this.velocity.normalize()
     }
 
     updatePosition() {
+        const acceleration = 0.01
         const deacceleration = 0.07
+        const maxForce = 5
+        const maxVisualTurn = 0.4
+
+        this.previousRadian.unshift(this.radian)
+
+        if (this.previousRadian.length > 5) {
+            this.previousRadian.pop()
+        }
+
+
+        // const previousRadianSum = this.previousRadian.reduce((f, l)=> f + l, 0);
+        // const previousRadianMean = previousRadianSum / this.previousRadian.length
+        // let previousRadianDispersion = 0
+        // let previousRadianDispersionNumerator = 0
+
+        // for (let index = 0; index < this.previousRadian.length; index++) {
+        //     previousRadianDispersionNumerator += Math.pow(this.previousRadian[index] - previousRadianMean, 2)
+        // }
+
+        // previousRadianDispersion = previousRadianDispersionNumerator / this.previousRadian.length
+
+        // if (previousRadianDispersion > 1) {
+        //     previousRadianDispersion = 0
+        // }
+
+
+
+        this.modelVisualTurn = 0
+
+        this.force = this.force > maxForce ? this.force : this.force + acceleration
 
         if (this.isMove == false && this.force > 0) {
             this.force = this.force - deacceleration
-            //return 0
         }
 
         const dt = 1/10
@@ -79,13 +118,17 @@ class Car {
         const xz = this.model.position.z + this.velocity.z * dt * this.force
 
         this.model.position.set(xs, 0, xz)
-        this.camera.position.set(xs, 6, xz + 4)
-        this.camera.rotation.x = Math.PI + 2.40
+        this.model.rotation.y = -this.radian + Math.PI / 2
+
+        this.carModel.rotation.y = this.modelVisualTurn
+
+        this.camera.position.set(0, 4, 0 + (4 + (this.force * this.force * this.force) / 50))
+        this.camera.rotation.x = -25 * Math.PI / 180
+
     }
 
     loop() {
         requestAnimationFrame( this.loop.bind(this) );
-        this.model.rotation.y = -this.radian + Math.PI / 2
         this.updatePosition()
 
         // if (this.isMove == false) {

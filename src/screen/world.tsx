@@ -68,11 +68,9 @@ class World {
         })
 
         const carModel = car.getModel()
-        //carModel.add(this.camera)
+        carModel.add(this.camera)
 
         this.scene.add( carModel );
-
-        
 
         this.animate();
         this.createWorld()
