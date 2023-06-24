@@ -71,7 +71,7 @@ class World {
             camera: this.camera
         })
 
-        const carModel = car.getModel()
+        const carModel = await car.getModel()
         carModel.add(this.camera)
 
         this.scene.add( carModel );

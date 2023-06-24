@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 class Car {
     model: any;
@@ -57,17 +58,27 @@ class Car {
     }
 
 
-    getModel() {
+    async getModel() {
         const carBox = new THREE.Object3D()
 
-        const geometry = new THREE.BoxGeometry( 1, 1, 2 ); 
-        const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
-        const cube = new THREE.Mesh( geometry, material ); 
+        // const geometry = new THREE.BoxGeometry( 1, 1, 2 ); 
+        // const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
+        // const cube = new THREE.Mesh( geometry, material ); 
 
-        carBox.add(cube)
+        const loader = new GLTFLoader();
+
+
+        const gltf = await loader.loadAsync( '/public/models/car.glb')
+
+        gltf.scene.scale.set(0.2, 0.2, 0.2)
+ 
+
+        console.log(gltf.scene)
+
+        carBox.add(gltf.scene)
 
         this.model = carBox
-        this.carModel = cube
+        this.carModel = gltf.scene
 
         this.loop()
 
@@ -143,7 +154,7 @@ class Car {
         this.model.position.set(xs, 0, xz)
         this.model.rotation.y = -this.radian + Math.PI / 2
 
-        this.carModel.rotation.y = this.modelVisualTurn
+        this.carModel.rotation.y = this.modelVisualTurn + Math.PI
 
         this.camera.position.set(0, 4, 0 + (4 + (this.force * this.force * this.force) / 50))
         this.camera.rotation.x = -25 * Math.PI / 180
