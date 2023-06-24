@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 class Car {
+    loadmanager: any
+    
     model: any;
     carModel: any
     isMove: boolean;
@@ -16,12 +18,13 @@ class Car {
 
     camera: any
 
-    constructor({ camera }: any) {
+    constructor({ camera, loadmanager }: any) {
         document.addEventListener("onJoystickMove", this.handleJoystickMove.bind(this))
         document.addEventListener("onJoystickStart", this.handleJoystickStart.bind(this))
         document.addEventListener("onJoystickStop", this.handleJoystickStop.bind(this))
 
         this.camera = camera
+        this.loadmanager = loadmanager
 
         
         this.model = undefined
@@ -65,7 +68,7 @@ class Car {
         // const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
         // const cube = new THREE.Mesh( geometry, material ); 
 
-        const loader = new GLTFLoader();
+        const loader = new GLTFLoader(this.loadmanager.manager);
 
 
         const gltf = await loader.loadAsync( '/public/models/car.glb')

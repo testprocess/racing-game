@@ -2,12 +2,13 @@ import React from 'react';
 import './App.css'
 
 import { Joystick } from './components/Joystick';
+import { Progress } from './components/Progress';
 
 
 const App: any = () => {
     return (
         <div>
-            <b>sdgsdg</b>
+            <Progress></Progress>
             <Joystick></Joystick>
 
 

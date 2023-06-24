@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Car } from './car'
 import { Terrain } from './terrain'
+import { Load } from './load'
 
 class World {
     scene: any;
@@ -8,6 +9,7 @@ class World {
     renderer: any;
     controls: any;
     blocks: any;
+    loadmanager: any
 
     constructor() {
         this.scene = undefined
@@ -25,6 +27,7 @@ class World {
     async init() {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color( 0x000000 );
+        this.loadmanager = new Load()
        // this.scene.fog = new THREE.Fog( 0xa0a0a0, 10, 50 );
     
         const clock = new THREE.Clock();
@@ -68,7 +71,8 @@ class World {
         this.scene.add( helper );
 
         const car = new Car({ 
-            camera: this.camera
+            camera: this.camera,
+            loadmanager: this.loadmanager
         })
 
         const carModel = await car.getModel()
