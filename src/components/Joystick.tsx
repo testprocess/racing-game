@@ -16,6 +16,11 @@ const Joystick = () => {
         document.addEventListener("mousedown", handleMousedown);
         document.addEventListener("mouseup", handleMouseup);
         document.addEventListener("mousemove", handleMousemove);
+
+        document.querySelector("#screen").addEventListener("touchstart", handleTouchdown);
+        document.querySelector("#screen").addEventListener("touchend", handleTouchup);
+        document.querySelector("#screen").addEventListener("touchmove", handleTouchmove);
+        
     }, []);
 
 
@@ -55,7 +60,8 @@ const Joystick = () => {
         document.dispatchEvent(event);
     }
 
-    const handleMousedown = (e: any) => {
+
+    const handleDown = ({ x, y }: any) => {
         joystickBody.current.classList.remove('d-none')
         joystickControl.current.classList.remove('d-none')
 
@@ -63,30 +69,29 @@ const Joystick = () => {
         dispatchEventStartMove()
 
 
-        joystickBody.current.style.top = `${e.offsetY-12}px`
-        joystickBody.current.style.left = `${e.offsetX-12}px`
+        joystickBody.current.style.top = `${y-12}px`
+        joystickBody.current.style.left = `${x-12}px`
 
-        joystickControl.current.style.top = `${e.offsetY-12}px`
-        joystickControl.current.style.left = `${e.offsetX-12}px`
+        joystickControl.current.style.top = `${y-12}px`
+        joystickControl.current.style.left = `${x-12}px`
     }
 
-    const handleMouseup = (e: any) => {
+    const handleUp = () => {
         isActivate = false
         dispatchEventStopMove()
 
         joystickBody.current.classList.add('d-none')
         joystickControl.current.classList.add('d-none')
         joystickSvg.current.classList.add('d-none')
-
     }
 
-    const handleMousemove = (e: any) => {
+    const handleMove = ({ x, y }: any) => {
         if (isActivate) {
             joystickSvg.current.classList.remove('d-none')
 
             let controlPosition = {
-                x: e.clientX-9,
-                y: e.clientY-9
+                x: x-9,
+                y: y-9
             }
 
             let joystickPosition = {
@@ -97,11 +102,53 @@ const Joystick = () => {
             joystickControl.current.style.top = `${controlPosition.y}px`
             joystickControl.current.style.left = `${controlPosition.x}px`
 
-            setJoystickPosition([e.clientX, e.clientY, joystickPosition.x, joystickPosition.y])
+            setJoystickPosition([x, y, joystickPosition.x, joystickPosition.y])
             dispatchEvent()
         }
     }
 
+
+
+    const handleMousedown = (e: any) => {
+        handleDown({
+            x: e.offsetX,
+            y: e.offsetY
+        })
+    }
+
+    const handleMouseup = (e: any) => {
+        handleUp()
+
+    }
+
+    const handleMousemove = (e: any) => {
+        handleMove({
+            x: e.clientX,
+            y: e.clientY
+        })
+    }
+
+
+    const handleTouchdown = (e: any) => {
+        handleDown({
+            x: e.targetTouches[0].clientX,
+            y: e.targetTouches[0].clientY
+        })
+    }
+
+    const handleTouchup = (e: any) => {
+        handleUp()
+
+    }
+
+    const handleTouchmove = (e: any) => {
+        handleMove({
+            x: e.targetTouches[0].clientX,
+            y: e.targetTouches[0].clientY
+        })
+    }
+
+    
     const getAngle = (p1: any, p2: any) => {
         if (isActivate) {
             let defX =  p1.x - p2.x;

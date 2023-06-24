@@ -85,6 +85,9 @@ class Car {
             radianDirection = (90 * Math.PI / 180) * (radianDirection >  Math.PI ? -1 : 1)
         }
 
+        this.modelVisualTurn = - radianDirection / 10
+
+
         if (this.isMove) {
             this.radian += radianDirection / 50
 
@@ -126,7 +129,6 @@ class Car {
 
 
 
-        this.modelVisualTurn = 0
 
         this.force = this.force > maxForce ? this.force : this.force + acceleration
 

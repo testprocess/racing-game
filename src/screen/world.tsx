@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Car } from './car'
+import { Terrain } from './terrain'
 
 class World {
     scene: any;
@@ -16,12 +17,15 @@ class World {
         this.blocks = undefined
 
         this.init()
+
+        window.addEventListener( 'resize', this.onWindowResize.bind(this) );
+
     }
 
     async init() {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color( 0x000000 );
-        this.scene.fog = new THREE.Fog( 0xa0a0a0, 10, 50 );
+       // this.scene.fog = new THREE.Fog( 0xa0a0a0, 10, 50 );
     
         const clock = new THREE.Clock();
     
@@ -54,10 +58,10 @@ class World {
         hemiLight.position.set( 0, 120, 0 );
         this.scene.add(hemiLight);
         
-        const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 100, 100 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: true} ) );
-        mesh.rotation.x = - Math.PI / 2;
-        mesh.receiveShadow = true;
-        this.scene.add(mesh);
+        // const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 100, 100 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: true} ) );
+        // mesh.rotation.x = - Math.PI / 2;
+        // mesh.receiveShadow = true;
+        // this.scene.add(mesh);
     
     
         const helper = new THREE.CameraHelper( dirLight.shadow.camera );
@@ -89,6 +93,21 @@ class World {
             cube.position.set(x, y, z)
             this.scene.add(cube)            
         }
+
+
+        const terrain = new Terrain()
+        const getWorld = terrain.getTerrain()
+
+        this.scene.add(getWorld)            
+
+    }
+
+    onWindowResize() {
+
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+
+        this.renderer.setSize( window.innerWidth, window.innerHeight );
 
     }
 
