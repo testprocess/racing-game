@@ -94,6 +94,8 @@ const Joystick = () => {
                 y: y-9
             }
 
+            
+
             let joystickPosition = {
                 x: Number(joystickBody.current.style.left.split('px')[0])+12,
                 y: Number(joystickBody.current.style.top.split('px')[0])+12

@@ -8,7 +8,6 @@ const Progress = () => {
                 <div className="spinner-border text-light" role="status">
                     <span className="visually-hidden">Loading...</span>
                 </div>
-                <br />
                 <p className='loadPercent' id='loadProg'>0%</p>
 
         </div>

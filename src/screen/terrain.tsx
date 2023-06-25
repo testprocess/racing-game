@@ -9,8 +9,8 @@ class Terrain {
     }
 
     getTerrain() {
-        const worldWidth = 256
-        const worldDepth = 256
+        const worldWidth = 512
+        const worldDepth = 210
 
         const data = this.generateHeight( worldWidth, worldDepth );
 
@@ -29,11 +29,15 @@ class Terrain {
 
         let x = 0, y = 0, z = 0;
 
+        console.log(data)
+
+
         for ( let i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
 
-           // verticess[ j + 1 ] = data[ i ] * 10;
+           //verticess[ j + 1 ] = data[ i ] * 10;
 
-            positionAttribute.setY( j, 0 );
+
+            positionAttribute.setY( i, data[ i ] * 10 );
 
             // x += ( Math.random() - 0.5 ) * 30;
             y += ( Math.random() - 0.5 ) * 3;
@@ -46,6 +50,8 @@ class Terrain {
         console.log(vertices)
 
         let mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture } ) );
+        //mesh.scale.set(0.1, 0.1, 0.1)
+        mesh.position.set(0, 0, 0)
 
         return mesh
     }
@@ -55,14 +61,14 @@ class Terrain {
         const size = width * height, data = new Uint8Array( size ),
             perlin = new ImprovedNoise(), z = Math.random() * 100;
 
-        let quality = 1;
+        let quality = 0.01;
 
         for ( let j = 0; j < 4; j ++ ) {
 
             for ( let i = 0; i < size; i ++ ) {
 
                 const x = i % width, y = ~ ~ ( i / width );
-                data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 1.75 );
+                data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 1.1 );
 
             }
 
