@@ -17,8 +17,11 @@ class Car {
     velocity: any;
 
     camera: any
+    scene: any
 
-    constructor({ camera, loadmanager }: any) {
+    raycaster: any
+
+    constructor({ camera, loadmanager, scene }: any) {
         document.addEventListener("onJoystickMove", this.handleJoystickMove.bind(this))
         document.addEventListener("onJoystickStart", this.handleJoystickStart.bind(this))
         document.addEventListener("onJoystickStop", this.handleJoystickStop.bind(this))
@@ -40,6 +43,18 @@ class Car {
 
         this.force = 0
         this.velocity = new THREE.Vector3( 0, 0, 0 )
+
+        this.raycaster = new THREE.Raycaster()
+        const rayOrigin = new THREE.Vector3(0, 0, 0)
+        const rayDirection = new THREE.Vector3(-2, 0, 0)
+        rayDirection.normalize()
+
+        this.raycaster.set(rayOrigin, rayDirection)
+
+        this.scene = scene
+
+
+        this.loopCollision()
 
     }
 
@@ -63,11 +78,6 @@ class Car {
 
     async getModel() {
         const carBox = new THREE.Object3D()
-
-        // const geometry = new THREE.BoxGeometry( 1, 1, 2 ); 
-        // const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} ); 
-        // const cube = new THREE.Mesh( geometry, material ); 
-
         const loader = new GLTFLoader(this.loadmanager.manager);
 
 
@@ -125,25 +135,6 @@ class Car {
             this.previousRadian.pop()
         }
 
-
-        // const previousRadianSum = this.previousRadian.reduce((f, l)=> f + l, 0);
-        // const previousRadianMean = previousRadianSum / this.previousRadian.length
-        // let previousRadianDispersion = 0
-        // let previousRadianDispersionNumerator = 0
-
-        // for (let index = 0; index < this.previousRadian.length; index++) {
-        //     previousRadianDispersionNumerator += Math.pow(this.previousRadian[index] - previousRadianMean, 2)
-        // }
-
-        // previousRadianDispersion = previousRadianDispersionNumerator / this.previousRadian.length
-
-        // if (previousRadianDispersion > 1) {
-        //     previousRadianDispersion = 0
-        // }
-
-
-
-
         this.force = this.force > maxForce ? this.force : this.force + acceleration
 
         if (this.isMove == false && this.force > 0) {
@@ -162,18 +153,46 @@ class Car {
         this.camera.position.set(0, 4, 0 + (4 + (this.force * this.force * this.force) / 50))
         this.camera.rotation.x = -25 * Math.PI / 180
 
+        //this.scene.add(new THREE.ArrowHelper(this.raycaster.ray.direction, this.raycaster.ray.origin, 300, 0x00ff00) );
+
     }
+
+    detectCollision() {
+        const rayOrigin = new THREE.Vector3(this.model.position.x, 1, this.model.position.z)
+        const rayDirection = new THREE.Vector3(this.velocity.x, 0, this.velocity.z)
+        rayDirection.normalize()
+
+        this.raycaster.set(rayOrigin, rayDirection)
+
+        let object = this.scene.getObjectByName( "terrain" );
+
+        const objectsToTest = [object]
+        const intersects = this.raycaster.intersectObjects(objectsToTest)
+
+        intersects.forEach((element: any) => {
+            console.log(element.distance)
+            if (element.distance < 5) {
+                console.log("CC")
+            }
+
+        });
+    }
+
+    loopCollision() {
+        setInterval(() => {
+            this.detectCollision()
+        }, 1000/8)
+    }
+
+    getRaycaster() {
+        return this.raycaster
+
+    }
+
 
     loop() {
         requestAnimationFrame( this.loop.bind(this) );
         this.updatePosition()
-
-        // if (this.isMove == false) {
-        //     this.model.translateZ(0)
-        // } else {
-        //     this.model.rotation.y = -this.radian + Math.PI / 2
-        //     this.updatePosition()
-        // }
     }
 
 }

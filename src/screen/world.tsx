@@ -28,6 +28,8 @@ class World {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color( 0x000000 );
         this.loadmanager = new Load()
+        this.createWorld()
+
        // this.scene.fog = new THREE.Fog( 0xa0a0a0, 10, 50 );
     
         const clock = new THREE.Clock();
@@ -72,16 +74,19 @@ class World {
 
         const car = new Car({ 
             camera: this.camera,
-            loadmanager: this.loadmanager
+            loadmanager: this.loadmanager,
+            scene: this.scene
         })
 
         const carModel = await car.getModel()
+        const carRaycaster = await car.getRaycaster()
+        
+
         carModel.add(this.camera)
 
         this.scene.add( carModel );
 
         this.animate();
-        this.createWorld()
     }
 
     createWorld() {
@@ -102,6 +107,7 @@ class World {
         const terrain = new Terrain()
         const getWorld = terrain.getTerrain()
 
+        getWorld.name = 'terrain'
         this.scene.add(getWorld)            
 
     }
