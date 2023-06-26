@@ -7,6 +7,8 @@ class Car {
     model: any;
     carModel: any
     isMove: boolean;
+    isCollision: boolean;
+
     radian: number;
     inputRadian: number
     standardRadian: number
@@ -32,6 +34,7 @@ class Car {
         
         this.model = undefined
         this.isMove = false
+        this.isCollision = false
         this.radian = 0
         this.inputRadian = 0
 
@@ -127,7 +130,6 @@ class Car {
         const acceleration = 0.01
         const deacceleration = 0.07
         const maxForce = 5
-        const maxVisualTurn = 0.4
 
         this.previousRadian.unshift(this.radian)
 
@@ -137,8 +139,15 @@ class Car {
 
         this.force = this.force > maxForce ? this.force : this.force + acceleration
 
+        this.carModel.rotation.y = this.modelVisualTurn + Math.PI
+
+
         if (this.isMove == false && this.force > 0) {
             this.force = this.force - deacceleration
+        }
+
+        if (this.isCollision == true) {
+            return 0
         }
 
         const dt = 1/10
@@ -148,7 +157,6 @@ class Car {
         this.model.position.set(xs, 0, xz)
         this.model.rotation.y = -this.radian + Math.PI / 2
 
-        this.carModel.rotation.y = this.modelVisualTurn + Math.PI
 
         this.camera.position.set(0, 4, 0 + (4 + (this.force * this.force * this.force) / 50))
         this.camera.rotation.x = -25 * Math.PI / 180
@@ -168,20 +176,25 @@ class Car {
 
         const objectsToTest = [object]
         const intersects = this.raycaster.intersectObjects(objectsToTest)
+        let collisionCheck = false
 
         intersects.forEach((element: any) => {
-            console.log(element.distance)
             if (element.distance < 5) {
+                collisionCheck = true
+                this.isCollision = true
                 console.log("CC")
             }
-
         });
+
+        if (collisionCheck == false) {
+            this.isCollision = false
+        }
     }
 
     loopCollision() {
         setInterval(() => {
             this.detectCollision()
-        }, 1000/8)
+        }, 1000/6)
     }
 
     getRaycaster() {
