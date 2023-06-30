@@ -35,7 +35,7 @@ class World {
         const clock = new THREE.Clock();
     
         
-        this.camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 1, 100 );
+        this.camera = new THREE.PerspectiveCamera( 120, window.innerWidth / window.innerHeight, 1, 100 );
         this.camera.position.set( 0, 3, 0 );
         this.camera.rotation.x = Math.PI + 2.40
 

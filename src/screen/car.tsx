@@ -147,7 +147,8 @@ class Car {
         }
 
         if (this.isCollision == true) {
-            return 0
+            this.force = -(this.force / 1.6)
+            //return 0
         }
 
         const dt = 1/10

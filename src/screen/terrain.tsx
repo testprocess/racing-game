@@ -14,7 +14,7 @@ class Terrain {
 
         const data = this.generateHeight( worldWidth, worldDepth );
 
-        const geometry = new THREE.PlaneGeometry( 750, 750, worldWidth - 1, worldDepth - 1 );
+        const geometry = new THREE.PlaneGeometry( 450, 750, worldWidth - 1, worldDepth - 1 );
         geometry.rotateX( - Math.PI / 2 );
 
         const texture = new THREE.CanvasTexture( this.generateTexture( data, worldWidth, worldDepth ) );
